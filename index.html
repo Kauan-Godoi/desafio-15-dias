@@ -1,114 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
+<body>
+    
+    <div id="principal">
 
-<   body>
-    <input id="entrada" type="text">
-    <button onclick="salvardados()">salvar</button>
+        <h1>cadastro de tarefas</h1>
+        <a href="/listarTarefas.html">vizualizar listas</a>
+        <div>
 
-    <br>
-    <p>Tarefas a fazer: </p>
-    <div id="editar"></div>
-   
+            <label for="titulo">Titulo da tarefa</label>
+            <br>
+            <input id="titulo" type="text" placeholder="Titulo da tarefa">
 
-    <div>
-        <ul id="listar"></ul>
+            <div>
+                <label for="Descricao">Descrição da tarefa</label>
+                <br>
+                <textarea id="descricao" placeholder="Descrição da tarefa"></textarea>
+            </div>
+
+            <button onclick="criar_tarefa()">Cadastrar</button>
+
+        </div>
+        <p id="mensagem"></p>
+
     </div>
-
-    <script>//torna possivel usar o JavaScript
-        let listaDeTarefas = [];
-        let index = 0;
-
-        //Salva os dados
-        function salvardados() {
-            let entrada = document.getElementById("entrada").value; //Pega o valor que foi digitado no input atravez do id "entrada"
-            
-            let entradaObj = {
-                id: index,
-                texto: entrada
-            };//cria um obj com id e texto. O id guarda o index do array e o texto guarda a entrada do input. 
-
-            index ++; //A variavel index tera um incremento a cada passagem da função
-
-            listaDeTarefas.push(entradaObj);//Empurra os valores criados no obj pra dentro do array listaDeTarefas.
-
-            //crud
-            listardados();//Chamada da função que lista todos os obj dentro do array
-        };
-
-        //lista os dados
-        function listardados() {
-            let ul = document.getElementById("listar"); //Pega a ul pelo o id dela.
-
-            let html = "";//inicia o html vazio
-
-            //Lista tudo que tem dentro do array listaDeTarefas
-            listaDeTarefas.forEach(elemento => {
-                
-                console.log(elemento); //mostra na tela os elementos puxados pelo forEach
-
-                html += `<li>
-                    ${elemento.texto} 
-                    <button onclick="alterar(${elemento.id})">
-                        editar
-                    </button>
-                    <button onclick="deletar(${elemento.id})">
-                        deletar
-                    </button>
-                </li>`;//${parametro} usa o javaScript e tem que usar as craze.
-            });// incrementa esta linha de codigo em html usando o +=;
-
-            ul.innerHTML = html; //muda a ul usando o innerHTML, no caso adiciona todas as linhas que estão dentro da variavel html, no caso a li.
-        };
-
-        //cria um input e um botão que irão servir para fazer a alteração
-        function alterar(id) {
-            let resultado = listaDeTarefas.find(obj => obj.id === id );/*percorre todo o array e para quando achar o id igual ao id do li
-            e guarda o obj achado dentro do array*/
-            let html = `<input type="text" id="textoParaEditar">
-                <button onclick="alterardados(${id})">
-                    alterar
-                </button>`;//qunado apertar no botão alterar ira chamar a função alterardados(id)
-
-            let divEditar = document.getElementById('editar');//Referencia a div que tem o id "editar"
-
-            divEditar.innerHTML = html;// adiciona a div as linhas escritas na variavel html.
-        };
-
-        //faz alteração dos obj do array
-        function alterardados(id){
-
-            let textoParaEditar = document.getElementById("textoParaEditar").value;//referencia ao input criado na função alterar
-
-            let resultado = listaDeTarefas.find(obj => obj.id === id );/*percorre todo o array e para quando achar o id igual ao id do li
-            e guarda o obj achado dentro do array*/
-
-            resultado.texto = textoParaEditar;/*Dentro do obj guardado seleciona apenas o texto dele. 
-            Depois altera o texto pelo valor dentro da variavel textoParaEditar*/
-           
-            listardados();
-
-            let divEditar = document.getElementById('editar');//referencia a div com id "editar".
-
-            divEditar.innerHTML = ""; //limpa a div pra não aparecer na tela o input para fazer a alteração.
-        };
-
-
-        function deletar (id){
-            let novaLista = listaDeTarefas.filter(obj => obj.id !== id);/*ao apertar o botão deletar ele pega todos os ids 
-            menos o id do obj que foi apertado*/
-            
-            listaDeTarefas = novaLista;//muda os valores do array pelos novos valores do array novalista.
-
-            listardados();//faz a listagem novamente.
-        }
-
-    </script>
+    <script src="/script.js"></script>  
 </body>
-
 </html>
