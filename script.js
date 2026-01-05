@@ -22,16 +22,61 @@ function getLista() {
 
 }
 
+
 function montarlista(tarefa, idBanco) {
+    const concluida = Boolean(tarefa.concluida);
 
-    return `<li id="'${tarefa.id}'">
-        ${tarefa.titulo}<br>
-        ${tarefa.descricao}          
-        <br>
-        <button onclick="editarTarefa('${tarefa.id}', '${idBanco}')">Editar</button>
+    // Botões condicionais
+    const botoes = concluida
+        ? `
         <button onclick="deletarTarefa('${idBanco}')">Deletar</button>
-    </li>`;
+      `
+        : `
+        <button onclick="editarTarefa('${tarefa.id}', '${idBanco}')">Editar</button>
+        <button onclick="concluirTarefa('${tarefa.id}', '${idBanco}')">Concluído</button>
+        <button onclick="deletarTarefa('${idBanco}')">Deletar</button>
+      `;
 
+    // Classe/estilo para tarefa concluída (verde). Se preferir, use apenas a classe e estilize via CSS.
+    const classeOuEstilo = concluida ? 'class="concluida" style="color:#0a7a25;"' : '';
+
+    return `<li id="${tarefa.id}" ${classeOuEstilo}>
+        ${tarefa.titulo}<br>
+        ${tarefa.descricao}
+        <br>
+        ${botoes}
+    </li>`;
+};
+
+
+function concluirTarefa(id, idBanco) {
+    fetch(url + `/tarefas/${idBanco}.json`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ concluida: true })
+    }).then(response => {
+        if (response.status === 200) {
+            // Atualiza a UI
+            const li = document.getElementById(id);
+            if (li) {
+                // marca visualmente como concluída (sem depender de CSS externo)
+                li.classList.add('concluida');
+                li.style.color = '#0a7a25'; // verde
+                // recria apenas os botões conforme regra (somente Deletar)
+                li.querySelectorAll('button').forEach(btn => btn.remove());
+                const btnDeletar = document.createElement('button');
+                btnDeletar.textContent = 'Deletar';
+                btnDeletar.onclick = () => deletarTarefa(idBanco);
+                li.appendChild(document.createElement('br'));
+                li.appendChild(btnDeletar);
+            } else {
+                // fallback: recarrega lista
+                getLista();
+            }
+        }
+    });
 };
 
 function editarTarefa(id, idBanco) {
@@ -70,7 +115,7 @@ function salvarTarefa(idBanco) {
     fetch(url + `/tarefas/${idBanco}.json`, {
         method: 'PATCH',// Define o metodo, o post é para enviar dados para o banco
         headers: {
-            'Contet-Type': 'application/json' //Informa que o body esta configurado com json
+            'contet-Type': 'application/json' //Informa que o body esta configurado com json
             // (padrão para todos os metodos, menos para o get)
         },
         body: JSON.stringify(tarefa)
@@ -84,7 +129,7 @@ function salvarTarefa(idBanco) {
 };
 
 function deletarTarefa(idBanco) {
-    const confirme = confirm("Tem serteza que deseja deletar esta tarefa?");
+    const confirme = confirm("Tem certeza que deseja deletar esta tarefa?");
     if (confirme) {
         fetch(url + `/tarefas/${idBanco}.json`, {
             method: 'DELETE',
@@ -103,11 +148,12 @@ function criar_tarefa() {
     let mensagem = document.getElementById("mensagem");//<p>
 
     const tarefa = {
-
-        id: new Date().toISOString(),//o banco cria o id automaticamente.
+        id: new Date().toISOString(),
         titulo: titulo,
         descricao: descricao,
+        concluida: false // nova flag
     };
+
 
     try {
 
