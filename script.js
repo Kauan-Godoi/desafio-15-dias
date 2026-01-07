@@ -26,7 +26,6 @@ function getLista() {
 function montarlista(tarefa, idBanco) {
     const concluida = Boolean(tarefa.concluida);
 
-    // Botões condicionais
     const botoes = concluida
         ? `
         <button onclick="deletarTarefa('${idBanco}')">Deletar</button>
@@ -37,7 +36,6 @@ function montarlista(tarefa, idBanco) {
         <button onclick="deletarTarefa('${idBanco}')">Deletar</button>
       `;
 
-    // Classe/estilo para tarefa concluída (verde). Se preferir, use apenas a classe e estilize via CSS.
     const classeOuEstilo = concluida ? 'class="concluida" style="color:#0a7a25;"' : '';
 
     return `<li id="${tarefa.id}" ${classeOuEstilo}>
@@ -58,13 +56,10 @@ function concluirTarefa(id, idBanco) {
         body: JSON.stringify({ concluida: true })
     }).then(response => {
         if (response.status === 200) {
-            // Atualiza a UI
             const li = document.getElementById(id);
             if (li) {
-                // marca visualmente como concluída (sem depender de CSS externo)
                 li.classList.add('concluida');
-                li.style.color = '#0a7a25'; // verde
-                // recria apenas os botões conforme regra (somente Deletar)
+                li.style.color = '#0a7a25'; 
                 li.querySelectorAll('button').forEach(btn => btn.remove());
                 const btnDeletar = document.createElement('button');
                 btnDeletar.textContent = 'Deletar';
@@ -72,7 +67,6 @@ function concluirTarefa(id, idBanco) {
                 li.appendChild(document.createElement('br'));
                 li.appendChild(btnDeletar);
             } else {
-                // fallback: recarrega lista
                 getLista();
             }
         }
@@ -151,7 +145,7 @@ function criar_tarefa() {
         id: new Date().toISOString(),
         titulo: titulo,
         descricao: descricao,
-        concluida: false // nova flag
+        concluida: false
     };
 
 
