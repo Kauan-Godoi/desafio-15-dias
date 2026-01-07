@@ -81,7 +81,7 @@ function concluirTarefa(id, idBanco) {
 
 function editarTarefa(id, idBanco) {
     if (!estaEditando) {
-        let liParaEditar = document.getElementById(`'${id}'`);
+        let liParaEditar = document.getElementById(id);
         const html = ` <div>
         <div>
             <label>Editar titulo da tarefa</label>
